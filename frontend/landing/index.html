@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="%VITE_BRAND_DESCRIPTION%" />
+    <meta property="og:title" content="%VITE_BRAND_NAME% — %VITE_BRAND_TAGLINE%" />
+    <meta property="og:description" content="%VITE_BRAND_DESCRIPTION%" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>%VITE_BRAND_NAME% — %VITE_BRAND_TAGLINE%</title>
+  </head>
+  <body>
+    <header class="bar">
+      <span class="brand"><span class="mark" aria-hidden="true"></span>%VITE_BRAND_NAME%</span>
+      <nav><a id="nav-signin" href="%VITE_PLATFORM_URL%">Operator sign in</a></nav>
+    </header>
+    <main>
+      <section class="hero">
+        <h1>%VITE_BRAND_TAGLINE%</h1>
+        <p>%VITE_BRAND_DESCRIPTION%</p>
+        <div class="actions">
+          <a class="button primary" href="%VITE_PUBLIC_URL%">Sign in to your account</a>
+          <a class="button" href="%VITE_PLATFORM_URL%">Platform console</a>
+        </div>
+        <p class="hint">Organizations sign in at their own address, for example <code id="tenant-example">yourcompany</code>.</p>
+      </section>
+    </main>
+    <footer>
+      <span>&copy; <span id="year"></span> %VITE_BRAND_NAME%</span>
+      <a id="contact" hidden>Contact</a>
+    </footer>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

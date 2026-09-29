@@ -1,0 +1,7 @@
+[Unit]
+Description={{PRODUCT_NAME}} health check
+
+[Service]
+Type=oneshot
+EnvironmentFile={{CONFIG_DIR}}/install.env
+ExecStart={{INSTALL_DIR}}/scripts/healthcheck.sh

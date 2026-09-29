@@ -1,0 +1,10 @@
+[Unit]
+Description={{PRODUCT_NAME}} daily backup
+
+[Timer]
+OnCalendar={{BACKUP_SCHEDULE}}
+RandomizedDelaySec=15min
+Persistent=true
+
+[Install]
+WantedBy=timers.target

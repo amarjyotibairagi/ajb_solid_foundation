@@ -1,0 +1,155 @@
+{
+  "$comment": "Canonical, ordered manifest of platform-scope migrations. This is the single source of truth for BOTH scripts/platform-migrate.mjs (production and recovery) and scripts/ci-bootstrap-db.sh (CI). Never reorder or edit an applied entry's file contents -- the runner enforces SHA-256 checksums against the platform.schema_migration ledger and fails closed on drift. Append new entries only.",
+  "migrations": [
+    {
+      "file": "000_platform_baseline.sql",
+      "key": "000_platform_baseline",
+      "scope": "platform"
+    },
+    {
+      "file": "001_platform_security.sql",
+      "key": "001_platform_security",
+      "scope": "platform"
+    },
+    {
+      "file": "002_platform_role_check.sql",
+      "key": "002_platform_role_check",
+      "scope": "platform"
+    },
+    {
+      "file": "003_platform_control_plane.sql",
+      "key": "003_platform_control_plane",
+      "scope": "platform"
+    },
+    {
+      "file": "consumer/individuals.sql",
+      "key": "consumer/individuals:v1",
+      "scope": "consumer"
+    },
+    {
+      "file": "005_migration_inventory.sql",
+      "key": "005_migration_inventory:v1",
+      "scope": "platform"
+    },
+    {
+      "file": "006_rls_and_grants.sql",
+      "key": "006_rls_and_grants:v1",
+      "scope": "grants"
+    },
+    {
+      "file": "007_app_runtime_security.sql",
+      "key": "007_app_runtime_security:v1",
+      "scope": "grants"
+    },
+    {
+      "file": "008_tenant_provisioning_control_plane.sql",
+      "key": "008_tenant_provisioning_control_plane:v1",
+      "scope": "platform"
+    },
+    {
+      "file": "009_provisioning_worker_leases.sql",
+      "key": "009_provisioning_worker_leases:v1",
+      "scope": "platform"
+    },
+    {
+      "file": "010_runtime_role_timeouts.sql",
+      "key": "010_runtime_role_timeouts:v1",
+      "scope": "platform"
+    },
+    {
+      "file": "011_consumer_projects_and_auth_audit.sql",
+      "key": "011_consumer_projects_and_auth_audit:v1",
+      "scope": "consumer"
+    },
+    {
+      "file": "012_reserve_analytics_writer.sql",
+      "key": "012_reserve_analytics_writer:v1",
+      "scope": "grants"
+    },
+    {
+      "file": "013_consumer_auth_function_owner.sql",
+      "key": "013_consumer_auth_function_owner:v1",
+      "scope": "grants"
+    },
+    {
+      "file": "014_tenant_deprovisioning.sql",
+      "key": "014_tenant_deprovisioning:v1",
+      "scope": "platform"
+    },
+    {
+      "file": "015_platform_runtime_grants_and_pgcrypto.sql",
+      "key": "015_platform_runtime_grants_and_pgcrypto:v1",
+      "scope": "platform"
+    },
+    {
+      "file": "016_consumer_collaboration_rls_fix.sql",
+      "key": "016_consumer_collaboration_rls_fix:v1",
+      "scope": "consumer"
+    },
+    {
+      "file": "019_platform_webauthn_and_account_lifecycle.sql",
+      "key": "019_platform_webauthn_and_account_lifecycle:v1",
+      "scope": "platform"
+    },
+    {
+      "file": "020_platform_tenant_immutability_nullsafe.sql",
+      "key": "020_platform_tenant_immutability_nullsafe:v1",
+      "scope": "platform"
+    },
+    {
+      "file": "021_platform_bff_control_plane_functions.sql",
+      "key": "021_platform_bff_control_plane_functions:v1",
+      "scope": "platform"
+    },
+    {
+      "file": "022_consumer_rls_helper_acl_tighten.sql",
+      "key": "022_consumer_rls_helper_acl_tighten:v1",
+      "scope": "consumer"
+    },
+    {
+      "file": "023_platform_identity_and_lifecycle_hardening.sql",
+      "key": "023_platform_identity_and_lifecycle_hardening:v1",
+      "scope": "platform"
+    },
+    {
+      "file": "024_platform_argon2_password_hashes.sql",
+      "key": "024_platform_argon2_password_hashes:v1",
+      "scope": "platform"
+    },
+    {
+      "file": "025_platform_session_mfa_verified_at.sql",
+      "key": "025_platform_session_mfa_verified_at:v1",
+      "scope": "platform"
+    },
+    {
+      "file": "026_platform_invitations_and_operator_admin.sql",
+      "key": "026_platform_invitations_and_operator_admin:v1",
+      "scope": "platform"
+    },
+    {
+      "file": "027_platform_configuration_registry.sql",
+      "key": "027_platform_configuration_registry:v1",
+      "scope": "platform"
+    },
+    {
+      "file": "028_platform_operations_and_tiers.sql",
+      "key": "028_platform_operations_and_tiers:v1",
+      "scope": "platform"
+    },
+    {
+      "file": "029_platform_tenant_integrations.sql",
+      "key": "029_platform_tenant_integrations:v1",
+      "scope": "platform"
+    },
+    {
+      "file": "030_shared_state.sql",
+      "key": "030_shared_state:v1",
+      "scope": "platform"
+    },
+    {
+      "file": "031_consumer_admin_and_public_surface.sql",
+      "key": "031_consumer_admin_and_public_surface:v1",
+      "scope": "platform"
+    }
+  ]
+}

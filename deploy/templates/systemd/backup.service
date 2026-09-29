@@ -1,0 +1,17 @@
+[Unit]
+Description={{PRODUCT_NAME}} encrypted backup
+After={{APP_SLUG}}-postgresql.service
+Requires={{APP_SLUG}}-postgresql.service
+
+[Service]
+Type=oneshot
+EnvironmentFile={{CONFIG_DIR}}/env/backup.env
+ExecStart={{INSTALL_DIR}}/scripts/backup-platform-db.sh
+Nice=10
+IOSchedulingClass=best-effort
+IOSchedulingPriority=7
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome={{PROTECT_HOME}}
+ReadWritePaths={{BACKUP_DIR}} {{BACKUP_KEY_DIR}}

@@ -1,0 +1,25 @@
+[Unit]
+Description={{PRODUCT_NAME}} Cloudflare Tunnel
+After=network-online.target {{APP_SLUG}}-landing.service {{APP_SLUG}}-platform.service {{APP_SLUG}}-public.service {{APP_SLUG}}-tenant.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User={{APP_SLUG}}-cloudflared
+Group={{APP_SLUG}}-cloudflared
+ExecStart={{CLOUDFLARED_BIN}} --no-autoupdate tunnel run --token-file {{CONFIG_DIR}}/secrets/tunnel.token
+Restart=always
+RestartSec=5
+MemoryMax=256M
+TasksMax=256
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome={{PROTECT_HOME}}
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,23 @@
+{
+  "name": "@skeleton/tenant-provisioner",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "main": "./dist/worker.js",
+  "types": "./dist/worker.d.ts",
+  "scripts": {
+    "build": "tsc -b",
+    "start": "node dist/worker.js",
+    "typecheck": "tsc -b --pretty false"
+  },
+  "dependencies": {
+    "@skeleton/drizzle": "0.1.0",
+    "dotenv": "^17.4.2",
+    "pg": "^8.23.0"
+  },
+  "devDependencies": {
+    "@types/node": "26.2.0",
+    "@types/pg": "^8.23.1",
+    "typescript": "7.0.2"
+  }
+}

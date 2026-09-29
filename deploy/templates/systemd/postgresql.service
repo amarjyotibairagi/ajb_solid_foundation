@@ -1,0 +1,28 @@
+[Unit]
+Description={{PRODUCT_NAME}} PostgreSQL cluster
+After=network.target
+
+[Service]
+Type=notify
+User=postgres
+Group=postgres
+Environment=PGDATA={{PG_DATA_DIR}}
+RuntimeDirectory={{APP_SLUG}}-postgresql
+RuntimeDirectoryMode=0755
+RuntimeDirectoryPreserve=yes
+ExecStart={{PG_BIN}}/postgres -D {{PG_DATA_DIR}}
+ExecReload=/bin/kill -HUP $MAINPID
+KillSignal=SIGINT
+TimeoutStopSec=120
+Restart=on-failure
+RestartSec=5
+OOMScoreAdjust=-200
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome={{PROTECT_HOME}}
+ProtectSystem=strict
+ReadWritePaths={{PG_DATA_DIR}} /run/{{APP_SLUG}}-postgresql
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+
+[Install]
+WantedBy=multi-user.target

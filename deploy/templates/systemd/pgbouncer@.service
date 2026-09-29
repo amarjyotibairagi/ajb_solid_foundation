@@ -1,0 +1,30 @@
+[Unit]
+Description={{PRODUCT_NAME}} PgBouncer pool (%i)
+After=network.target {{APP_SLUG}}-postgresql.service
+Requires={{APP_SLUG}}-postgresql.service
+
+[Service]
+Type=notify
+User={{APP_SLUG}}-pgbouncer
+Group={{APP_SLUG}}-pgbouncer
+RuntimeDirectory={{APP_SLUG}}-pgbouncer-%i
+RuntimeDirectoryMode=0750
+ExecStart=/usr/sbin/pgbouncer {{CONFIG_DIR}}/pgbouncer/%i.ini
+ExecReload=/bin/kill -HUP $MAINPID
+KillSignal=SIGINT
+Restart=always
+RestartSec=3
+MemoryMax=256M
+TasksMax=256
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome={{PROTECT_HOME}}
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+ReadOnlyPaths={{CONFIG_DIR}}/pgbouncer
+
+[Install]
+WantedBy=multi-user.target

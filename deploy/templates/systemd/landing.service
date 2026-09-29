@@ -1,0 +1,32 @@
+[Unit]
+Description={{PRODUCT_NAME}} landing site
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User={{APP_SLUG}}-landing
+Group={{APP_SLUG}}-landing
+WorkingDirectory={{INSTALL_DIR}}
+Environment=NODE_ENV=production
+EnvironmentFile={{CONFIG_DIR}}/env/landing.env
+ExecStart={{NODE_BIN}} {{INSTALL_DIR}}/scripts/serve-landing.mjs
+ExecStartPost={{INSTALL_DIR}}/scripts/wait-for-origin.sh localhost http://127.0.0.1:{{LANDING_PORT}}/api/health
+Restart=always
+RestartSec=5
+TimeoutStopSec=30
+KillSignal=SIGTERM
+MemoryMax=768M
+TasksMax=256
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome={{PROTECT_HOME}}
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+ReadOnlyPaths={{INSTALL_DIR}}
+
+[Install]
+WantedBy=multi-user.target

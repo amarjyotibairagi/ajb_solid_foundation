@@ -1,0 +1,13 @@
+node_modules/
+dist/
+.vite/
+*.local
+*.log
+*.tsbuildinfo
+.DS_Store
+.dependencies.sha256
+# .env/ holds the installer's decisions and is meant to be versioned. Never
+# commit a filled-in .env/secrets.env; keep private copies as *.local.
+.env/*.local
+runtime/
+backups/

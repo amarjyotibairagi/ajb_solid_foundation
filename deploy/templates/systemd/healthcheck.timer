@@ -1,0 +1,9 @@
+[Unit]
+Description={{PRODUCT_NAME}} periodic health check
+
+[Timer]
+OnBootSec=5min
+OnUnitActiveSec={{HEALTHCHECK_INTERVAL}}
+
+[Install]
+WantedBy=timers.target

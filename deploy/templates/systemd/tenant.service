@@ -1,0 +1,35 @@
+[Unit]
+Description={{PRODUCT_NAME}} tenant workspaces and API
+After=network-online.target {{APP_SLUG}}-pgbouncer@tenant.service {{APP_SLUG}}-pgbouncer@platform.service
+Wants=network-online.target
+Requires={{APP_SLUG}}-pgbouncer@tenant.service {{APP_SLUG}}-pgbouncer@platform.service
+
+[Service]
+Type=simple
+User={{APP_SLUG}}-tenant
+Group={{APP_SLUG}}-tenant
+WorkingDirectory={{INSTALL_DIR}}
+Environment=NODE_ENV=production
+UMask=0007
+EnvironmentFile={{CONFIG_DIR}}/env/tenant.env
+ExecStart={{NODE_BIN}} {{INSTALL_DIR}}/backend/tenant/dist/server.js
+ExecStartPost={{INSTALL_DIR}}/scripts/wait-for-origin.sh readiness.invalid http://127.0.0.1:{{TENANT_PORT}}/api/health any
+Restart=always
+RestartSec=5
+TimeoutStopSec=30
+KillSignal=SIGTERM
+MemoryMax=768M
+TasksMax=256
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome={{PROTECT_HOME}}
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+ReadOnlyPaths={{INSTALL_DIR}}
+ReadWritePaths={{DATA_DIR}}/storage
+
+[Install]
+WantedBy=multi-user.target

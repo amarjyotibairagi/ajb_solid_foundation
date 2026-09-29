@@ -1,0 +1,13 @@
+{
+  "name": "@skeleton/ui",
+  "private": true,
+  "version": "0.1.0",
+  "exports": {
+    "./styles.css": "./styles.css",
+    "./useTurnstile": "./src/useTurnstile.ts",
+    "./MetricCard": "./src/MetricCard.tsx"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0"
+  }
+}

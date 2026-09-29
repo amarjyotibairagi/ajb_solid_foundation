@@ -1,0 +1,35 @@
+[Unit]
+Description={{PRODUCT_NAME}} tenant provisioning worker
+After=network-online.target {{APP_SLUG}}-postgresql.service {{APP_SLUG}}-pgbouncer@tenant.service
+Wants=network-online.target
+Requires={{APP_SLUG}}-postgresql.service {{APP_SLUG}}-pgbouncer@tenant.service
+
+[Service]
+Type=simple
+User={{APP_SLUG}}-provisioner
+Group={{APP_SLUG}}-tenant
+SupplementaryGroups={{APP_SLUG}}-pgbouncer
+WorkingDirectory={{INSTALL_DIR}}
+Environment=NODE_ENV=production
+UMask=0007
+EnvironmentFile={{CONFIG_DIR}}/env/provisioner.env
+ExecStart={{NODE_BIN}} {{INSTALL_DIR}}/backend/provisioner/dist/worker.js
+Restart=always
+RestartSec=5
+TimeoutStopSec=30
+KillSignal=SIGTERM
+MemoryMax=768M
+TasksMax=256
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome={{PROTECT_HOME}}
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+ReadOnlyPaths={{INSTALL_DIR}}
+ReadWritePaths={{DATA_DIR}}/tenant-credentials {{DATA_DIR}}/storage {{CONFIG_DIR}}/pgbouncer
+
+[Install]
+WantedBy=multi-user.target

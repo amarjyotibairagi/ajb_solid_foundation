@@ -1,0 +1,93 @@
+name: Security and reliability gates
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: platform_db
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d platform_db"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      NODE_ENV: test
+      DATABASE_ADMIN_URL: postgresql://postgres:postgres@127.0.0.1:5432/platform_db
+      DATABASE_URL: postgresql://platform_bff_runtime:ci-platform-runtime-password@127.0.0.1:5432/platform_db
+      PLATFORM_BFF_DATABASE_URL: postgresql://platform_bff_runtime:ci-platform-runtime-password@127.0.0.1:5432/platform_db
+      PUBLIC_DATABASE_URL: postgresql://consumer_bff_login:ci-consumer-password@127.0.0.1:5432/platform_db
+      PUBLIC_DIRECT_DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/platform_db
+      TEST_DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/platform_db
+      TENANT_REGISTRY_DATABASE_URL: postgresql://tenant_registry_reader_login:ci-registry-password@127.0.0.1:5432/platform_db
+      TENANT_PROVISIONER_DATABASE_URL: postgresql://tenant_provisioner_login:ci-provisioner-password@127.0.0.1:5432/platform_db
+      TENANT_CREDENTIALS_DIR: /tmp/skeleton-ci-tenants
+      TENANT_PGBOUNCER_AUTH_FILE: /tmp/skeleton-ci-pgbouncer-users.txt
+      TENANT_PGBOUNCER_HOST: 127.0.0.1
+      TENANT_PGBOUNCER_PORT: 6360
+      TENANT_PGBOUNCER_ADMIN_USER: pgbouncer_admin
+      TENANT_PGBOUNCER_ADMIN_PASSWORD: ci-pgbouncer-admin-password
+      TENANT_POOL_DATABASE_URL: postgresql://tenant_pool_login:ci-pool-password@127.0.0.1:5432/platform_db
+      STORAGE_ROOT: /tmp/skeleton-ci-storage
+      INTEGRATION_SECRET_KEY: dGVzdC1vbmx5LWludGVncmF0aW9uLWtleS0zMmJ5dGU=
+      TENANT_ROOT_DOMAIN: sandbox.test
+      TEST_TENANTS_FILE: /tmp/platform-test-tenants.json
+      PLATFORM_HOSTNAME: platform.sandbox.test
+      PLATFORM_FRONTEND_ORIGIN: https://platform.sandbox.test
+      PLATFORM_PUBLIC_ORIGIN: https://platform.sandbox.test
+      PUBLIC_PUBLIC_ORIGIN: https://user.sandbox.test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - run: npm run typecheck
+      - name: Install and start CI PgBouncer
+        run: |
+          sudo apt-get update && sudo apt-get install -y pgbouncer
+          chmod 600 tests/fixtures/pgbouncer/userlist.txt
+          pgbouncer -d tests/fixtures/pgbouncer/pgbouncer.ini
+      - run: bash scripts/ci-bootstrap-db.sh
+      - name: Run unit tests
+        run: |
+          OUTPUT=$(npm run test:unit 2>&1 | tee /tmp/unit-test.log)
+          if echo "$OUTPUT" | grep -q 'ℹ skipped [1-9]'; then
+            echo "Error: Skipped unit tests detected!"
+            exit 1
+          fi
+      - name: Run integration tests
+        run: |
+          OUTPUT=$(npm run test:integration 2>&1 | tee /tmp/integration-test.log)
+          if echo "$OUTPUT" | grep -q 'ℹ skipped [1-9]'; then
+            echo "Error: Skipped integration tests detected!"
+            exit 1
+          fi
+      - name: Verify migration ledger matches the manifest
+        # Fails on checksum drift (an applied migration file was edited) or on a
+        # migration the database never ran. This is the gate that would have
+        # caught CI and production diverging on migrations 017 and 018.
+        run: npm run verify:migrations
+      - name: Verify tenant registry agrees with the cluster
+        # Registry rows, schemas, database roles, credential files, and the
+        # PgBouncer auth file must all agree. Any drift fails the build.
+        run: npm run verify:tenants
+      - name: Verify all platform operator hashes are argon2id
+        run: node scripts/platform-operator.mjs audit-hashes
+      - run: npm run scan:secrets
+      - run: bash scripts/validate-backup-restore.sh
+      - run: npm audit --audit-level=high

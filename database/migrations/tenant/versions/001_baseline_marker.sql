@@ -1,0 +1,2 @@
+-- Version 1 is installed by database/migrations/tenant/001_tenant_schema.sql.
+-- This marker lets the fleet migration runner share the same version ledger.

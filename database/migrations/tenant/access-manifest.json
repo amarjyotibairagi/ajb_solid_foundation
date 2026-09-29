@@ -1,0 +1,23 @@
+{
+  "$comment": "Declarative privileges and row-level security for every relation in a tenant schema. Applied after migrations by the provisioner (new tenants) and scripts/migrate-tenants.mjs (existing tenants). Grants are reset to exactly what is listed here on every run. A relation that exists in a tenant schema but is not listed makes the run fail, so a module that adds a table must declare its access here. 'runtime' is the tenant's per-request role (SET LOCAL ROLE); 'login' is the pooled login role, used without a role switch only for session bookkeeping. 'rls': true enables and forces the tenant-context policy; 'tenantColumn' additionally binds rows to app.tenant_id through that column.",
+  "version": 1,
+  "relations": {
+    "schema_metadata": {"rls": false, "public": ["select"], "runtime": ["select"], "login": ["select"]},
+    "schema_migration": {"rls": false, "public": ["select"], "runtime": ["select"], "login": ["select"]},
+    "user_account": {"rls": true, "runtime": ["select", "insert", "update", "delete"]},
+    "user_identity": {"rls": true, "runtime": ["select", "insert", "update", "delete"]},
+    "user_invitation": {"rls": true, "runtime": ["select", "insert", "update"]},
+    "permission": {"rls": true, "runtime": ["select"]},
+    "role_definition": {"rls": true, "runtime": ["select"]},
+    "role_permission": {"rls": true, "runtime": ["select"]},
+    "role_assignment": {"rls": true, "runtime": ["select", "insert", "update", "delete"]},
+    "team": {"rls": true, "runtime": ["select", "insert", "update", "delete"]},
+    "team_membership": {"rls": true, "runtime": ["select", "insert", "update", "delete"]},
+    "tenant_setting": {"rls": true, "runtime": ["select", "insert", "update", "delete"]},
+    "subscription_entitlement": {"rls": true, "runtime": ["select"]},
+    "audit_event": {"rls": true, "runtime": ["select", "insert"]},
+    "capability_delegation": {"rls": true, "runtime": ["select", "insert", "update"]},
+    "user_session": {"rls": true, "tenantColumn": "tenant_id", "login": ["select", "insert", "update", "delete"]},
+    "stored_object": {"rls": true, "runtime": ["select", "insert", "update", "delete"]}
+  }
+}
